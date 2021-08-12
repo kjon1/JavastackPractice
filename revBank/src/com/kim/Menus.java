@@ -36,6 +36,9 @@ public class Menus {
             System.out.println("3. View transaction log");
             System.out.println("4. Add new employee");
             System.out.println("5. Logout and return to main menu");
+            System.out.println();
+            System.out.println();
+            System.out.println("          * * * * *");
 
             eInput = s.nextInt();
 
@@ -58,6 +61,7 @@ public class Menus {
                     }
                     int cid = s.nextInt();
                     dao.getAccounts(cid);
+                    eMenu();
                     break;
 
                     case 3:
@@ -88,32 +92,35 @@ public class Menus {
         Scanner sc = new Scanner(System.in);
         Customer customer = new Customer();
         CustomerDao cDao = CustomerDaoFactory.getCustomerDao();
-        System.out.print("Please enter Customer Id: ");
+         //   System.out.println("Welcome!");
+        System.out.print("Please enter your customer id: ");
         while (!sc.hasNextInt()) {
             System.out.println();
             System.out.println("Invalid input type, try again");
             sc.next();
         }
         int cid = sc.nextInt();
-        System.out.println("Please enter Password:");
+        System.out.println("Please enter your password:");
         String pw = sc.next();
         customer = cDao.getCustomerById(cid, pw);
-        if (customer != null) {
-            System.out.println("");
-            customerMenu();
-        } else {
-            System.out.println("Sorry, user not found: ID or password is invalid.");
+        //if (customer != null) {
+         //   System.out.println("");
+         //   customerMenu();
+        //} else {
+            System.out.println("Sorry, user not found or ID and/or password does not match.");
             System.out.println("Returning to main screen....");
             System.out.println();
             //  initialMenu();
-            initialMenu();
+            custLogin();
         }
-    }
+    //}
     //System.out.println("oops not functional yet");
     public static void newCustomer () throws SQLException {
             Scanner sc = new Scanner(System.in);
             CustomerDao cDao = CustomerDaoFactory.getCustomerDao();
-            System.out.println("--------New Customer Form--------");
+            System.out.println(" 5SB");
+            System.out.println("-------New Customer Registration Page--------");
+            System.out.println("               * * * * * ");
             System.out.println();
             System.out.println("Please enter your SSN: it will act as your customer ID:");
             while (!sc.hasNextInt()) {
@@ -134,8 +141,8 @@ public class Menus {
             String inputFname = sc.next();
             System.out.println("Please enter your last name:");
             String inputLname = sc.next();
-            System.out.println("One moment while we create your new customer account.... Processing......");
-            System.out.println("Thank you" + "," + inputFname);
+            System.out.println("One moment while we create your new customer account........");
+            //System.out.println("Thank you" + "," + inputFname + );
             Customer customer = new Customer();
             customer.setCId(inputCid);
             customer.setPw(inputPw);
@@ -143,7 +150,8 @@ public class Menus {
             customer.setLastName(inputLname);
             cDao.newCustomer(customer);
             System.out.println();
-            System.out.println("Your customer ID is: " + inputCid + "." + "Your customer account password is:" + inputPw);
+            //System.out.println("Your customer ID is: " + inputCid + "." + "Your customer account password is:" + inputPw);
+            System.out.println("Thank you, " + inputFname + " for joining 5ive Star Bank.");
             System.out.println("Press \"Enter\" to proceed to Customer login page and login with your new credentials.");
             Scanner enterkey = new Scanner(System.in);
             enterkey.nextLine();
@@ -188,7 +196,7 @@ public class Menus {
             System.out.println("The program is continually evolving to become the ultimate solution for the");
             System.out.println("enterprising banking customer of tomorrow. ");
             System.out.println("Also the training program put together by the folks at Revature is very exciting and we learn something new");
-            System.out.println("every single day. I would like to thank Mr V and my batchmates for all their help");
+            System.out.println("every single day.");
             System.out.println("");
             System.out.println("");
             System.out.println("     Press \"Enter\" to return to main menu.");
@@ -203,9 +211,10 @@ public class Menus {
             int input = 0;
             do {
                 System.out.println("_________________________");
-                System.out.println(" 5SB   * * * * *");
+                System.out.println(" 5SB   ");
                 System.out.println("  -----------------------");
                 System.out.println("    Customer Portal");
+                System.out.println("        * * * * *");
                 System.out.println();
                 System.out.println("1. Login to banking account");
                 System.out.println("2. Apply for a new bank account.");
@@ -241,7 +250,10 @@ public class Menus {
 
                 case 0:
                     System.out.println("You have successfully logged out.");
-                    System.out.println("Returning to main page.......");
+                    System.out.println();
+                    System.out.println("Press \"Enter\" to return to main menu.");
+                    Scanner enterkey = new Scanner(System.in);
+                    enterkey.nextLine();
                     initialMenu();
             }
         }

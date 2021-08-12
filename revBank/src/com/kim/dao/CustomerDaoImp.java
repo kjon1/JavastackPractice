@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Scanner;
 
+import static com.kim.Menus.custLogin;
 import static com.kim.Menus.customerMenu;
 
 public class CustomerDaoImp implements CustomerDao {
@@ -60,24 +61,29 @@ public class CustomerDaoImp implements CustomerDao {
         ResultSet resultSet = statement.executeQuery();
         if (resultSet.next()) {
 
-            //if (resultSet != null) {
+            System.out.println("Login success.");
+            String sql = "select * from customer where cid = " + cid;
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                //cid = resultSet.getInt(1);
+                String fName = (rs.getString(3));
+                System.out.println("       * * * * *");
+                System.out.println("Hello, " + fName + ".");
 
-            //cid = resultSet.getInt(1);
-            //pw = resultSet.getString(2);
-            //firstName = resultSet.getString(3);
+                customerMenu();
+                return null;
+            }
 
-            System.out.println();
-            System.out.println("Login success! Welcome back, valued customer.");
-            System.out.println("We are happy to see you again.");
-            //+ employee.getRole());
-            customerMenu();
-            return customer;
+        }else{
+                System.out.println("Login failed: CID or password not found or does not match.");
+                custLogin();
+            }
 
+                return null;
 
-        } else {
-            return null;
-        }
-    }
+            }
+
 
     @Override
     public void viewBalance() throws SQLException {

@@ -237,19 +237,31 @@ public class EmployeeDaoImp implements EmployeeDao {
     }
 
     @Override
-    public void viewBalance(Account account) throws SQLException {
+    public void viewBalance(int an) throws SQLException {
         Scanner s = new Scanner(System.in);
-        System.out.println("Enter account to check");
-        int accnum = s.nextInt();
-        String sql = "select * from account where accountnumber = " + accnum;
+       // System.out.println("Enter account to check");
+       // int accnum = s.nextInt();
+        String sql = "select * from account where accountnumber = " + an;
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(sql);
         if (rs.next()) {
-            System.out.println(" Your balance is: " + "$" + rs.getString(2));
+            System.out.println("Your Account Summary...");
+            System.out.println("-------------------------------");
+            System.out.println("Account No:  " + rs.getInt("accountnumber"));
+            System.out.println("Account Balance: " + "$ " + rs.getString(2));
             System.out.println();
-customerMenu();
-            }
+            System.out.println();
+            System.out.println("Press \"Enter\" to return to your banking services page.");
+            Scanner enterkey = new Scanner(System.in);
+            enterkey.nextLine();
+
+
+        }else{
+            System.out.println("sorry, a strange error occurred.");
+            customerMenu();
         }
+
+    }
     }
 
 

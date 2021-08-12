@@ -39,11 +39,16 @@ public class AccountDaoImp implements AccountDao {
 
 
         int count = ps.executeUpdate();
-        if (count > 0)
+        if (count > 0) {
             System.out.println("Your new banking account has been successfully created.");
-        else
+            System.out.println();
+            System.out.println("Press \"Enter\" to continue.");
+            Scanner enterkey = new Scanner(System.in);
+            enterkey.nextLine();
+
+        } else {
             System.out.println("Sorry, an unexpected error has occurred.");
-        bankAccountValidate();
+        }
 
 
     }
@@ -81,15 +86,9 @@ public class AccountDaoImp implements AccountDao {
         statement.setString(3, status);
         ResultSet resultSet = statement.executeQuery();
         if (resultSet.next()) {
-
-            //if (resultSet != null) {
-
             int an = resultSet.getInt(1);
             //pw = resultSet.getString(2);
             String approveStat = resultSet.getString(3);
-            //BigDecimal bal = resultSet.getBigDecimal(2);
-
-
             System.out.println("Login success!");
             String query = "select * from account where accountnumber = " + an;
             Statement s = connection.createStatement();
@@ -98,16 +97,22 @@ public class AccountDaoImp implements AccountDao {
 
                 int accountNum = rs.getInt(1);
                 BigDecimal bal = rs.getBigDecimal(2);
-                System.out.println("Your balance is " + bal);
+                System.out.println("-----------------------------------");
+                System.out.println("Logged into account No: " + an);
             }
+
+        } else {
+            System.out.println("Login failed: account number and/or PIN does not match.");
+            System.out.println();
+            System.out.println("Press \"Enter\" to continue.");
+            Scanner enterkey = new Scanner(System.in);
+            enterkey.nextLine();
+            customerMenu();
+
         }
+
         return account;
     }
-
-
-
-
-
 
     @Override
     public void approveAccount(int accountnumber, String status) throws SQLException {
@@ -121,47 +126,93 @@ public class AccountDaoImp implements AccountDao {
 
         try {
             String sql = "update account set status = ? where accountNumber = ?";
-        PreparedStatement p = connection.prepareStatement(sql);
-        p.setString(1, status);
-        p.setInt(2, accountNumber);
-        int count = p.executeUpdate();
-        if (count > 0)
-        System.out.println("Account updated. ");
-        //System.out.println("Returning to employee portal.");
-    }
-        catch (SQLException e)
-    {
-            e.printStackTrace();
-            System.out.println("Error: account not updated");
-
-
-        }
-
-    }
-
-
-    public void depositFunds(Customer customer) {
-        Scanner sc = new Scanner(System.in);
-        try {
-            System.out.println("Please enter account number of the account for deposit:");
-            int an = sc.nextInt();
-            System.out.println("enter amount to deposit");
-            BigDecimal depo = sc.nextBigDecimal();
-
-            String sql = "update account set balance = balance + ? where accountNumber = ?";
             PreparedStatement p = connection.prepareStatement(sql);
-            p.setBigDecimal(1,depo);
-            p.setInt(2, an);
+            p.setString(1, status);
+            p.setInt(2, accountNumber);
             int count = p.executeUpdate();
             if (count > 0)
-                System.out.println("Deposit success. ");
-            bankAccountValidate();
+                System.out.println("Account updated. ");
+            System.out.println();
+            System.out.println("Press \"Enter\" to continue.");
+            Scanner enterkey = new Scanner(System.in);
+            enterkey.nextLine();
             //System.out.println("Returning to employee portal.");
-
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error: account not updated");
+            System.out.println();
+            System.out.println("Press \"Enter\" to continue.");
+            Scanner enterkey = new Scanner(System.in);
+            enterkey.nextLine();
+
+
         }
 
     }
+
+    @Override
+    public void depositFund(BigDecimal depo, int an) throws SQLException {
+        String sql = "update account set balance = balance + ? where accountNumber = ?";
+        PreparedStatement p = connection.prepareStatement(sql);
+        p.setBigDecimal(1, depo);
+        p.setInt(2, an);
+        int count = p.executeUpdate();
+        if (count > 0)
+            System.out.println("Deposit success." + "$ " + depo + " was deposited to your account.");
+        String s = "select * from account where accountnumber = " + an;
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(s);
+        if (rs.next()) {
+            BigDecimal balA = (rs.getBigDecimal(2));
+            System.out.println("Your new account balance is: " + balA);
+            System.out.println();
+            System.out.println("Press \"Enter\" to continue.");
+            Scanner enterkey = new Scanner(System.in);
+            enterkey.nextLine();
+        }
+
+    }
+
+    @Override
+    public void withdrawFund(BigDecimal withdraw, int an) throws SQLException {
+        String check = "select * from account where accountnumber = " + an;
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(check);
+        if (rs.next()) {
+            double balA = (rs.getDouble(2));
+            BigDecimal balance = BigDecimal.valueOf(balA);
+
+            if (withdraw.compareTo(balance) < 0) {
+
+                String sql = "update account set balance = balance - ? where accountNumber = ?";
+                PreparedStatement p = connection.prepareStatement(sql);
+                p.setBigDecimal(1, withdraw);
+                p.setInt(2, an);
+                int count = p.executeUpdate();
+                if (count > 0)
+                    System.out.println("Withdraw success." + "$ " + withdraw + " was withdrawn from your account.");
+                /*String s1 = "select * from account where accountnumber = " + an;
+                Statement s = connection.createStatement();
+                ResultSet rs2 = s.executeQuery(s1);
+                if (rs2.next()) {
+
+                    //double bal = (rs.getDouble(2));
+                    BigDecimal bal1 = rs.getBigDecimal(2);
+                    BigDecimal bal2 = bal1-withdraw;
+
+                    //System.out.println("Your new account balance is: " + bal);
+                    System.out.println("new balance " + bal1);*/
+
+
+            } else {
+                System.out.println("Sorry, your account does not have the necessary funds to cover the withdrawal.");
+                System.out.println();
+                System.out.println("Press \"Enter\" to return to banking services page.");
+                Scanner enterkey = new Scanner(System.in);
+                enterkey.nextLine();
+            }
+        }
+    }
 }
+
+

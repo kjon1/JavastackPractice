@@ -44,5 +44,6 @@ public interface EmployeeDao {
 
     void depositFunds(Account account);
 
-    void viewBalance(Account account) throws SQLException;
+    void viewBalance(int account) throws SQLException;
+
 }
